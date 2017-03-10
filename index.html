@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>D3.js practice</title>
+</head>
+<script src="node_modules/d3/build/d3.js"></script>
+<style>
+    h1 {
+        color:gray;
+        text-align: center;
+        margin-bottom: 10%;
+    }
+    div {
+        width: 50%;
+        text-align: center;
+        padding: 2px;
+        margin-left: 25%;
+        margin-bottom: 5px;
+        background-color: #f1f1f1;
+        border: 1px white solid;
+        border-radius: 5px;
+    }
+    a, a:link, a:hover, a:visited {
+        text-decoration: none;
+        color:black;
+    }
+</style>
+<body>
+<h1>Hello D3</h1>
+
+<div style="background-color: orange;opacity: 0.5">Step by Step</div>
+<script>
+    //Read Csv file
+    d3.csv('storage/index.csv', function (data) {
+        console.debug(JSON.stringify(data));
+        dataset = data;
+    
+        //create el and bind data
+        var divs = d3.select('body').selectAll('div').data(dataset, function (d) {
+            return d;
+        });
+        
+        //append div to body, set <a> data
+        divs.enter().append('div').append('a').attr('href',function (d){
+            return d.url+'.html';
+        }).text(function (d){
+            return d.title;
+        }).style('color', function(d){
+            return d.color;
+        });
+    });
+
+</script>
+</body>
+</html>

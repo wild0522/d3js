@@ -1,0 +1,19 @@
+{
+  "name": "d3js",
+  "version": "1.0.0",
+  "description": "practice project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wild0522/d3js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wild0522/d3js/issues"
+  },
+  "homepage": "https://github.com/wild0522/d3js#readme"
+}

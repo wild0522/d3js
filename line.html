@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>D3.js practice</title>
+    <!--<script src="node_modules/d3/build/d3.min.js"></script>-->
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <!--<script src="https://d3js.org/d3-path.v1.min.js"></script>-->
+    <style>
+        div {
+            float: left;
+            width:20%;
+        }
+    </style>
+</head>
+<body>
+<h1>Line</h1>
+<div id="line1"></div>
+<script>
+    var data = [
+        {x:10,y:10},
+        {x:50,y:100},
+        {x:60,y:50},
+        {x:100,y:30}
+    ];
+    
+    var data_format = d3.svg.line()
+        .x(function (d) {
+            return d.x;
+        })
+        .y(function (d) {
+            return d.y;
+        });
+
+    data_format.interpolate('step-after');
+    d3.select('body').append('svg')
+        .attr('width',120)
+        .attr('height',120)
+        .append('path')
+        .attr('d', data_format(data))
+        .attr('y', 0)
+        .attr('stroke', 'black')
+        .attr('stroke-width', '5px')
+        .attr('fill', 'none');
+    d3.select('body').append('br');
+    var type_interpolate = [
+        'linear',
+        'linear-closed',
+        'step',
+        'step-before',
+        'step-after',
+        'basis',
+        'basis-open',
+        'basis-closed',
+        'bundle',
+        'cardinal',
+        'cardinal-open',
+        'cardinal-closed',
+        'monotone'
+    ];
+    
+    for(var i=1;i<12;i++){
+    data_format.interpolate(type_interpolate[i]);
+    var dv = d3.select('body').append('div');
+    dv.text(type_interpolate[i]).append('br');
+    dv.append('svg')
+        .attr('width',120)
+        .attr('height',120)
+        .append('path')
+        .attr('d', data_format(data))
+        .attr('y', 0)
+        .attr('stroke', 'black')
+        .attr('stroke-width', '5px')
+        .attr('fill', 'none');
+    }
+</script>
+</body>
+</html>
