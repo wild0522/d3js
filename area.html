@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>D3.js practice</title>
+    <!--<script src="node_modules/d3/build/d3.min.js"></script>-->
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <!--<script src="https://d3js.org/d3-path.v1.min.js"></script>-->
+    <style>
+    </style>
+</head>
+<body>
+<h1>Area</h1>
+<div id="line1"></div>
+<div id="line2"></div>
+<script>
+    var data = [
+        {x:10.234,y:10},
+        {x:20,y:30},
+        {x:30.123,y:50},
+        {x:40,y:10.44},
+        {x:50,y:40},
+        {x:60,y:50},
+        {x:70,y:70},
+        {x:80,y:30.968},
+        {x:90,y:30},
+        {x:100,y:20},
+        {x:110,y:5},
+    ];
+
+    var dataXmin = d3.min(data,function (d) {return d.x;});
+    var dataXmax = d3.max(data,function (d) {return d.x;});
+    var dataYmin = d3.min(data,function (d) {return d.y;});
+    var dataYmax = d3.max(data,function (d) {return d.y;});
+
+    var width=200,height=200;
+
+    var scaleX = d3.scale.linear()
+        .domain([dataXmin,dataXmax])
+        .range([10,width]);
+    var scaleY = d3.scale.linear()
+        .domain([dataYmin,dataYmax])
+        .range([10,height]);
+    
+    var data_format = d3.svg.area()
+        .x(function(d) { return scaleX(d.x); })
+        .y0(0)
+        .y1(function(d) { return scaleY(d.y); });
+    
+    
+    //    data_format.interpolate('step-after');
+    var s = d3.select('#line1').append('svg');
+        s.attr('id', 's')
+        .attr('width', width+150)
+        .attr('height', height+150)
+        .style('border', '1px solid black')
+        .append('path')
+        .attr('d', data_format(data))
+        .attr({
+            'stroke':'green',
+            'fill':'rgba(173,210,240,.1)'
+        });
+    //圖1 圓滑----------------------------------------------
+
+    var data_format = d3.svg.area()
+        .x(function(d) { return scaleX(d.x); })
+        .y0(0)
+        .y1(function(d) { return scaleY(d.y); })
+//        .interpolate('bundle');
+        .interpolate('cardinal');
+
+
+        s.append('path')
+        .attr('d', data_format(data))
+        .attr({
+            'stroke':'#c00',
+            'fill':'rgba(255,0,0,.1)'
+        });
+    
+    //圖2 藍------------------------------------------------
+    var data2 = [
+        {x:0, y0:40, y1:60},
+        {x:20, y0:70, y1:90},
+        {x:40, y0:80, y1:100},
+        {x:60, y0:70, y1:80},
+        {x:80, y0:75, y1:70},
+        {x:100, y0:90, y1:60},
+        {x:120, y0:50, y1:30},
+        {x:140, y0:50, y1:40},
+        {x:160, y0:40, y1:20}];
+
+    var data_format2 = d3.svg.area()
+        .x(function(d) { return scaleX(d.x); })
+        .y0(function(d) { return scaleY(d.y0); })
+        .y1(function(d) { return scaleY(d.y1); });
+
+    s.append('path')
+        .attr('d', data_format2(data2))
+        .attr({
+            'stroke':'lightblue',
+            'fill':'rgba(173,210,240,.3)'
+        });
+    
+    //綠色部分
+    var data_format2 = d3.svg.area()
+        .x(function(d) { return scaleX(d.x); })
+        .y0(function(d) { return scaleY(d.y0); })
+        .y1(function(d) { return scaleY(d.y1); })
+        .defined(function(d) { return d.x%3 != 0; }); //只顯示特定資料
+
+    s.append('path')
+        .attr('d', data_format2(data2))
+        .attr({
+            'stroke':'lightblue',
+            'fill':'rgba(157,234,154,.3)'
+        });
+        
+    //圖3 Mix-------------------------------------------
+    var data3 = [
+        {x:0, y:38, z:28},
+        {x:20, y:27, z:15},
+        {x:40, y:56, z:39},
+        {x:60, y:34, z:45},
+        {x:80, y:41, z:88},
+        {x:100, y:35, z:74},
+        {x:120, y:100, z:55},
+        {x:140, y:57, z:75},
+        {x:160, y:36, z:44},
+        {x:180, y:41, z:30}
+    ];
+
+    var width2=400,height2=200,axisXPadding=30,axisYPadding=30;
+
+
+    var minX = d3.min(data3, function(d){return d.x});
+    var maxX = d3.max(data3, function(d){return d.x});
+    var minY = d3.min(data3, function(d){return d.y});
+    var maxY = d3.max(data3, function(d){return d.y});
+    
+    var scaleX2 = d3.scale.linear()
+        .range([0,width2])
+        .domain([minX,maxX]);
+    var scaleY2 = d3.scale.linear()
+        .range([height2,0])
+        .domain([0,maxY]);
+    var axisX = d3.svg.axis()
+        .scale(scaleX2)
+        .orient('bottom');
+    var axisY = d3.svg.axis()
+        .scale(scaleY2)
+        .orient('left');
+    var axisXGrid = d3.svg.axis()
+        .scale(scaleX2)
+        .orient('bottom')
+        .tickFormat('')
+        .tickSize(-height2,0);
+
+    var axisYGrid = d3.svg.axis()
+        .scale(scaleY2)
+        .orient('left')
+        .tickFormat('')
+        .tickSize(-width2,0);
+
+    var df_area1 = d3.svg.area()
+        .x(function (d) {
+            return scaleX2(d.x);
+        })
+        .y0(height2)
+        .y1(function (d) {
+            return scaleY2(d.y);
+        })
+
+    var df_area2 = d3.svg.area()
+        .x(function (d) {
+            return scaleX2(d.x);
+        })
+        .y0(height2)
+        .y1(function (d) {
+            return scaleY2(d.z);
+        });
+    var df_line1 = d3.svg.line()
+        .x(function (d) {
+            return scaleX2(d.x);
+        })
+        .y(function (d) {
+            return scaleY2(d.y);
+        });
+
+    var df_line2 = d3.svg.line()
+        .x(function (d) {
+            return scaleX2(d.x);
+        })
+        .y(function (d) {
+            return scaleY2(d.z);
+        })
+        ;
+    
+    d3.select('#line2')
+        .append('svg')
+        .attr('width', width2+axisXPadding+30)
+        .attr('height', height2+axisYPadding+50)
+        .style({
+            'border':'1px dotted #ccc'
+        })
+        .append('path')
+        .attr('d', df_area1(data3))
+        .attr({
+//            'stroke':'green',
+            'fill':'rgba(157,234,154,.3)',
+            'transform':'translate('+axisXPadding+','+axisYPadding+')'
+        });
+
+    d3.select('#line2 svg').append('g')
+        .call(axisXGrid)
+        .attr({
+            'transform':'translate('+axisXPadding+','+(height2+axisYPadding)+')',
+            'stroke':'rgba(0,0,0,.1)',
+            'fill':'none'
+        })
+    ;
+    d3.select('#line2 svg').append('g')
+        .call(axisYGrid)
+        .attr({
+            'transform':'translate('+axisXPadding+','+axisYPadding+')',
+            'fill':'none',
+            'stroke':'rgba(0,0,0,.1)'
+        });
+    
+    d3.select('#line2 svg').append('path')
+        .attr('d', df_area2(data3))
+        .attr({
+//            'stroke':'lightblue',
+            'fill':'rgba(173,210,240,.3)',
+            'transform':'translate('+axisXPadding+','+axisYPadding+')'
+        });
+    d3.select('#line2 svg').append('path')
+        .attr('d', df_line1(data3))
+        .attr('y',0)
+        .attr({
+            'stroke':'green',
+            'fill':'none',
+            'transform':'translate('+axisXPadding+','+axisYPadding+')'
+        });
+    d3.select('#line2 svg').append('path')
+        .attr('d', df_line2(data3))
+        .attr({
+            'stroke':'lightblue',
+            'fill':'none',
+            'transform':'translate('+axisXPadding+','+axisYPadding+')'
+        });
+
+    d3.select('#line2 svg').append('g')
+        .call(axisX)
+        .attr({
+            'transform':'translate('+axisXPadding+','+(height2+axisYPadding)+')',
+            'stroke':'black',
+            'fill':'none'
+        })
+        .selectAll('text')
+        .attr({
+            'fill':'#000',
+            'stroke':'none',
+        }).style({
+        'font-size':'11px'
+    })
+    ;
+    d3.select('#line2 svg').append('g')
+        .call(axisY)
+        .attr({
+            'transform':'translate('+axisXPadding+','+axisYPadding+')',
+            'stroke':'black',
+            'fill':'none'
+        })
+        .selectAll('text')
+        .attr({
+            'fill':'#000',
+            'stroke':'none',
+        }).style({
+        'font-size':'11px'
+    });
+</script>
+</body>
+</html>

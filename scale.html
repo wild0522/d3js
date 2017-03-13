@@ -11,7 +11,9 @@
 <body>
 <h1>Scale</h1>
 <div id="line1"></div>
+<div id="line2"></div>
 <script>
+    //Quantitative ------------------------------------------------
     var data = [
         {x:10.234,y:10},
         {x:20,y:30},
@@ -47,7 +49,7 @@
             return scaleY(d.y);
         });
 //    data_format.interpolate('step-after');
-    d3.select('body').append('svg')
+    d3.select('#line1').append('svg')
         .attr('width', width)
         .attr('height', height)
         .append('path')
@@ -56,6 +58,59 @@
         .attr('stroke', 'black')
         .attr('stroke-width', '3px')
         .attr('fill', 'none');
+    //ordinal ------------------------------------------------
+    var data2=[
+        {x:'a',y:135},
+        {x:'b',y:138},
+        {x:'c',y:132},
+        {x:'d',y:121},
+        {x:'e',y:126},
+        {x:'f',y:140},
+        {x:'g',y:123},
+        {x:'h',y:89},
+        {x:'i',y:79},
+        {x:'j',y:83}
+    ];
+    
+    var s2 = d3.select('#line2')
+        .append('svg')
+        .attr({
+            'width': width,
+            'height': 200,
+        }).style({
+            'border':'1px solid #000'
+        });
+    
+    var s2_scale = d3.scale.ordinal()
+        .domain(data2.map(function(d){return(d.x);}))
+//        .range([0, width]);
+//        .range([0,20,40,60,80,100,120,140,160,180]);
+//        .rangeRoundPoints([0,width],2);
+        .rangeBands([0,width],1.1,0);
+    
+    var s2_line = d3.svg.line()
+        .x(function (d) {
+            return s2_scale(d.x);
+        }).y(function (d) {
+            return d.y;
+        });
+    
+    s2.append('path')
+        .attr({
+            'd': s2_line(data2),
+            'stroke':'#f66',
+            'fill':'none'
+        });
+    
+    var axis = d3.svg.axis()
+        .scale(s2_scale)
+        .orient('top');
+    
+    s2.append('g')
+        .call(axis)
+        .attr({
+            'transform':'translate(0,'+(200)+')',
+        });
 </script>
 </body>
 </html>

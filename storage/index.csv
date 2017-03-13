@@ -4,6 +4,7 @@ DOM 操作,dom,green
 幾何圖形,shape,pink
 比例尺,scale,black
 座標網格,axisgrid,green
+區域,area,blue
 RWD,rwd,lightblue
 滑鼠游標,mouse,red
 轉png圖,topng,gray
