@@ -6,5 +6,6 @@ DOM 操作,dom,green
 座標網格,axisgrid,green
 區域,area,blue
 RWD,rwd,lightblue
+使用外部圖型,incpic,pink
 滑鼠游標,mouse,red
 轉png圖,topng,gray

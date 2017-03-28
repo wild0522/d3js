@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>D3.js practice</title>
+    <!--<script src="node_modules/d3/build/d3.min.js"></script>-->
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <!--<script src="https://d3js.org/d3-path.v1.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<h1>使用外部圖型</h1>
+<h4>xline:href (image)</h4>
+<div id="line1"></div>
+<h4>xline:href local (image)</h4>
+<div id="line2"></div>
+<h4>$.get</h4>
+<div id="line3"></div>
+<h4>d3.xml (include)</h4>
+<div id="line4"></div>
+<h4>d3.xml (include, jquery.fn)</h4>
+<div id="line5"></div>
+<script>
+    //======xline:href=================
+    
+    var svg = d3.select('#line1').append('svg').attr({
+        width:300,
+        height:300
+    });
+    
+    svg.append('g')
+        .append('svg:image')
+        .attr('xlink:href','http://thenewcode.com/assets/images/thumbnails/homer-simpson.svg')
+        .attr({
+            width:300,
+            height:300
+        });
+    
+    //======xline:href local=============
+    
+    var svg2 = d3.select('#line2').append('svg').attr({
+        width:300,
+        height:300
+    });
+    
+    svg2.append('g')
+        .append('svg:image')
+        .attr('xlink:href','/assets/svg_1.svg')
+        .attr({
+            width:300,
+            height:300
+        });
+    
+    //======$.get local=========================
+
+    //use html format
+    $.get('/assets/svg_1.svg', null, function(data){
+        $('#line3').html(data);
+        var svg3 = d3.select('#line3 svg').attr({
+            width:150,
+            height:150
+        });
+    }, 'html');
+    //OR xml format
+    $.get('/assets/svg_1.svg', null, function(data){
+        $('#line3').append(data.documentElement);
+//        var svg3 = d3.select('#line3 svg').attr({
+//            width:150,
+//            height:150
+//        });
+    }, 'xml');
+    //======d3.xml=========================
+    
+//    d3.xml('/assets/svg_2.svg', 'xml', function (err, xml) {
+    //在 android 可直接讀取，在 fn 無法
+    d3.xml('/assets/svg_2.svg').mimeType("image/svg+xml").get(function(error, xml) {
+        if (error) throw error;
+        $('#line4').append(xml.documentElement);
+        var svg4 = d3.select('#line4 svg');
+        svg4.attr({
+            width:300,
+            height:300
+        })
+    });
+    
+    //======d3.xml jQuery.fn=========================
+
+    $.fn.svgImg = function(options) {
+        var target = this.get(0);
+        d3.xml('/assets/svg_2.svg').mimeType("image/svg+xml").get(function(error, xml) {
+            if (error) throw error;
+            target.append(xml.documentElement);
+            var svg5 = d3.select('#line5 svg');
+            svg5.attr({
+                width:350,
+                height:350
+            })
+        });
+    };
+
+    $('#line5').svgImg();
+    
+</script>
+</body>
+</html>
