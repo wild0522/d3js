@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/wild0522/d3js/issues"
   },
-  "homepage": "https://github.com/wild0522/d3js#readme"
+  "homepage": "https://github.com/wild0522/d3js#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "d3": "^4.7.4",
+    "express": "^4.15.2",
+    "jsdom": "^9.12.0"
+  }
 }
