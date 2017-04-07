@@ -1,0 +1,120 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>D3.js practice</title>
+    <!--<script src="node_modules/d3/build/d3.min.js"></script>-->
+    <script src="https://d3js.org/d3.v3.js"></script>
+    <!--<script src="https://d3js.org/d3-path.v1.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<style>
+
+    .ticks {
+        font: 10px sans-serif;
+    }
+
+    .track,
+    .track-inset,
+    .track-overlay {
+        stroke-linecap: round;
+    }
+
+    .track {
+        stroke: #000;
+        stroke-opacity: 0.3;
+        stroke-width: 10px;
+    }
+
+    .track-inset {
+        stroke: #ddd;
+        stroke-width: 8px;
+    }
+
+    .track-overlay {
+        pointer-events: stroke;
+        stroke-width: 50px;
+        cursor: crosshair;
+    }
+
+    .handle {
+        fill: #fff;
+        stroke: #000;
+        stroke-opacity: 0.5;
+        stroke-width: 1.25px;
+    }
+
+</style>
+</head>
+<body>
+<h1>Slider</h1>
+<h4>Html5 Native (input range)</h4>
+<input id="slider" type="range" min="100" max="300" step="5" value="120" style="width: 70%">
+<div id="line1"></div>
+<div id="line2"></div>
+<h4>D3.js slider</h4>
+<svg width="960" height="500"></svg>
+<script>
+
+    //HTML5 native + jquery ------------------------------------
+    var tArea = d3.select('#line1').append('text');
+    $('#slider').on('input', function () {
+        tArea.text($(this).val());
+    })
+    $('#slider').trigger('input');
+
+    //D3.js ---------------------------------------------------
+    //https://bl.ocks.org/mbostock/6452972
+    var svg = d3.select("svg"),
+        margin = {right: 50, left: 50},
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height");
+
+    var x = d3.scale.linear()
+        .domain([380, 780])
+        .range([0, width])
+        .clamp(true);
+
+    var slider = svg.append("g")
+        .attr("class", "slider")
+        .attr("transform", "translate(" + margin.left + "," + height / 2 + ")");
+
+    slider.append("line")
+        .attr("class", "track")
+        .attr("x1", x.range()[0])
+        .attr("x2", x.range()[1])
+        .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+        .attr("class", "track-inset")
+        .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+        .attr("class", "track-overlay")
+        .call(d3.behavior.drag()
+//            .on("start.interrupt", function() { slider.interrupt(); })
+            .on("drag", function() { hue(x.invert(d3.event.x)); }));
+
+
+    
+    slider.insert("g", ".track-overlay")
+        .attr("class", "ticks")
+        .attr("transform", "translate(0," + 18 + ")")
+        .selectAll("text")
+        .data(x.ticks(10))
+        .enter().append("text")
+        .attr("x", x)
+        .attr("text-anchor", "middle")
+        .text(function(d) { return d + "°"; });
+
+    var handle = slider.insert("circle", ".track-overlay")
+        .attr("class", "handle")
+        .attr("r", 9);
+
+    slider.transition() // Gratuitous intro!
+        .duration(750)
+        .tween("hue", function() {
+            var i = d3.interpolate(0, 70);
+            return function(t) { hue(i(t)); };
+        });
+
+    function hue(h) {
+        tArea.text(h);
+        handle.attr("cx", x(h));
+        svg.style("background-color", d3.hsl(h, 0.8, 0.8));
+    }
+</script>
+</body>

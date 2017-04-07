@@ -8,6 +8,6 @@ DOM 操作,dom,green
 RWD,rwd,lightblue
 使用外部圖型,incpic,pink
 滑鼠游標,mouse,red
-轉png圖,topng,gray
-Slider Event,scrollev,purple
+轉成圖片,toimg,gray
+Slider Event,sliderev,purple
 alpha漸層,alpha,orange
